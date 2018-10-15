@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:async/async.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:leap_app/usermanagement.dart';
 
 Future<FirebaseUser> user = FirebaseAuth.instance.currentUser();
 
@@ -10,52 +10,43 @@ class LEAPDrawer extends StatefulWidget {
 }
 
 class _LEAPDrawerState extends State<LEAPDrawer> {
-
   @override
   Widget build(BuildContext context) {
+    var drawerBackground = new BoxDecoration(
+      gradient: LinearGradient(colors: [Colors.redAccent, Colors.pink]),
+    );
 
-  var drawerBackground = new BoxDecoration(
-
-    gradient: LinearGradient(colors: [Colors.redAccent, Colors.pink]),
-  );
-
-  var header = DrawerHeader(
-          child: Container(
-            alignment: Alignment.centerLeft,
-            child: new Column(
-              children: <Widget>[
-                new Text("LEAP Companion"),
-                new Expanded(
-                  child: new Container(
-
-                    alignment: Alignment.bottomLeft,
-                    child: Profile(),
-                  ),
-
-                ),
-                
-              ],
+    var header = DrawerHeader(
+      child: Container(
+        alignment: Alignment.centerLeft,
+        child: new Column(
+          children: <Widget>[
+            new Text("LEAP Companion"),
+            new Expanded(
+              child: new Container(
+                alignment: Alignment.bottomLeft,
+                child: Profile(),
+              ),
             ),
-          ),
-          decoration: drawerBackground,
+          ],
+        ),
+      ),
+      decoration: drawerBackground,
+    );
 
-        );
+    var logout = new ListTile(
+      title: new Text("Logout"),
+      trailing: new Icon(Icons.lock),
+      onTap: () => UserManagement().onTapSignout(context),
+    );
 
-var logout = new ListTile(
-  title: new Text("Logout"),
-  trailing: new Icon(Icons.lock),
-  onTap: () => onTapSignout(context),
-);
-
-
- var drawerItems = [header, logout];
+    var drawerItems = [header, logout];
 
     return new Drawer(
       child: new ListView(
         children: drawerItems,
       ),
     );
-
   }
 }
 
@@ -66,40 +57,37 @@ class Profile extends StatelessWidget {
       future: FirebaseAuth.instance.currentUser(),
       builder: (BuildContext context, AsyncSnapshot<FirebaseUser> user) {
         if (user.hasData) {
-            return Container(
-              height: 80.0,       
-   
-              child: new Row(
-                children: <Widget>[
-                  new CircleAvatar(backgroundImage: NetworkImage("${user.data.photoUrl}"),radius: 20.0,),
-                  new SizedBox(
-                    width: 20.0,
+          return Container(
+            height: 80.0,
+            child: new Row(
+              children: <Widget>[
+                new CircleAvatar(
+                  backgroundImage: NetworkImage("${user.data.photoUrl}"),
+                  radius: 20.0,
+                ),
+                new SizedBox(
+                  width: 20.0,
+                ),
+                new Container(
+                  child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      new Text("Welcome",
+                          style: new TextStyle(fontWeight: FontWeight.bold)),
+                      new Text("${user.data.email}")
+                    ],
                   ),
-                  new Container(
-               
-                    child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        new Text("Welcome", style: new TextStyle(fontWeight: FontWeight.bold)) ,
-                        new Text("${user.data.email}")
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            );
+                )
+              ],
+            ),
+          );
         } else {
           return new Container();
         }
       },
-      
     );
   }
-
-
 }
-  void onTapSignout(BuildContext context) {
-    FirebaseAuth.instance.signOut();
-    Navigator.pop(context);
-  }
+
+

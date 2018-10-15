@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -25,7 +24,6 @@ class _CreateAccountState extends State<CreateAccount> {
   @override
   Widget build(BuildContext context) {
     final double _screenwidth = MediaQuery.of(context).size.width;
-    final double _screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.blue,

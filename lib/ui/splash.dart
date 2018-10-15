@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:leap_app/ui/createaccount.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:leap_app/usermanagement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:leap_app/ui/simpleloader.dart';
+
+String _email;
+String _password;
+
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-final GoogleSignIn _googleSignIn = new GoogleSignIn();
 
 class Splash extends StatefulWidget {
   @override
@@ -12,12 +15,12 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-  String _email;
-  GlobalKey scaffoldKey = GlobalKey<ScaffoldState>();
-  final passwordResetForm = GlobalKey<FormState>();
-
+     final loginFormKey = new GlobalKey<FormState>();
+     GlobalKey scaffoldKey = GlobalKey<ScaffoldState>();
+ 
   @override
   Widget build(BuildContext context) {
+
 
     final double _screenwidth = MediaQuery.of(context).size.width;
     final double _screenHeight = MediaQuery.of(context).size.height;
@@ -36,7 +39,7 @@ class _SplashState extends State<Splash> {
         ),
         new Center(
             child: new Container(
-          height: _screenHeight - 200.0,
+          height: _screenHeight - 150.0,
           width: _screenwidth - 70.0,
           child: new Card(
             shape: RoundedRectangleBorder(
@@ -45,7 +48,9 @@ class _SplashState extends State<Splash> {
             color: Colors.white,
             child: new Container(
               margin: EdgeInsets.all(20.0),
-              child: new Column(
+              child: new Form(
+                key: loginFormKey,
+                            child: new Column(
                 children: <Widget>[
                   new Container(
                     height: 120.0,
@@ -57,10 +62,15 @@ class _SplashState extends State<Splash> {
                     height: 20.0,
                   ),
                   new TextFormField(
+                    validator: validateEmail,
+                    onSaved: (str) => _email = str,
                     decoration: new InputDecoration(
                         fillColor: Colors.green, labelText: "Email"),
                   ),
                   new TextFormField(
+                    obscureText: true,
+                    validator: validatePassword,
+                    onSaved: (str) => _password = str,
                     decoration: new InputDecoration(
                         fillColor: Colors.green, labelText: "Password"),
                   ),
@@ -68,7 +78,7 @@ class _SplashState extends State<Splash> {
                     height: 30.0,
                   ),
                   new MaterialButton(
-                    onPressed: () {},
+                    onPressed: () => onLoginWithEmail(context),
                     color: Colors.pinkAccent,
                     child: new Text("Login"),
                     textColor: Colors.white,
@@ -76,7 +86,7 @@ class _SplashState extends State<Splash> {
                     splashColor: Colors.blue,
                   ),
                   new MaterialButton(
-                    onPressed: _gSignin,
+                    onPressed: () {UserManagement().gSignin();},
                     color: Colors.blueAccent,
                     child: new Text("Login with Google"),
                     textColor: Colors.white,
@@ -85,7 +95,7 @@ class _SplashState extends State<Splash> {
                   ),
                   new MaterialButton(
                     onPressed: () {
-                      onTapCreateAccount(context);
+                      UserManagement().onTapCreateAccount(context);
                     },
                     color: Colors.lightBlueAccent,
                     child: new Text("Register"),
@@ -94,9 +104,11 @@ class _SplashState extends State<Splash> {
                     splashColor: Colors.pinkAccent,
                   ),
                   new MaterialButton(
-                    onPressed: () {
-                      onTapForgotPassword(context);
-                    },
+                    onPressed: () {onTapForgotPassword(context);},
+                      
+                        
+                      
+                    
                     color: Colors.lightBlueAccent,
                     child: new Text("Forgot password"),
                     textColor: Colors.white,
@@ -105,6 +117,8 @@ class _SplashState extends State<Splash> {
                   ),
                 ],
               ),
+              ),
+  
             ),
           ),
         ),
@@ -113,14 +127,10 @@ class _SplashState extends State<Splash> {
     );
   }
 
-  void onTapCreateAccount(BuildContext context) {
-    Navigator.push(
-        context,
-        new MaterialPageRoute(
-            builder: (BuildContext context) => new CreateAccount()));
-  }
 
-  void onTapForgotPassword(BuildContext context) {
+
+  
+ void onTapForgotPassword(BuildContext context) {
     var passwordreset = new SimpleDialog(
       children: <Widget>[
         new Container(
@@ -131,9 +141,15 @@ class _SplashState extends State<Splash> {
                 key: passwordResetForm,
                 child: new Column(
                   children: <Widget>[
-                    new Text("Password reset", textAlign: TextAlign.left, style: new TextStyle(color:Colors.blue, fontWeight: FontWeight.bold),),
+                    new Text(
+                      "Password reset",
+                      textAlign: TextAlign.left,
+                      style: new TextStyle(
+                          color: Colors.blue, fontWeight: FontWeight.bold),
+                    ),
                     new Divider(),
-                    new Text("By tapping reset password, a link will be sent\nto your email, please check your inbox"),
+                    new Text(
+                        "By tapping reset password, a link will be sent\nto your email, please check your inbox"),
                     new Container(
                       height: 30.0,
                     ),
@@ -146,7 +162,9 @@ class _SplashState extends State<Splash> {
                       height: 10.0,
                     ),
                     new RaisedButton(
-                      onPressed: onTapReset,
+                      onPressed: () {
+                        onTapReset(context);
+                      },
                       child: new Text("Reset password"),
                     ),
                   ],
@@ -157,31 +175,7 @@ class _SplashState extends State<Splash> {
     showDialog(context: context, child: passwordreset);
   }
 
-  String validateEmail(String str) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    print("Validating $_email");
-    if (str.length == 0) {
-      return "Please enter your email address";
-    } else if (!regex.hasMatch(str)) {
-      return "Not a valid email address";
-    } else {
-      return null;
-    }
-  }
-
-  void onTapReset() {
-    var form = passwordResetForm.currentState;
-    print("onTapReset $_email");
-    if (form.validate()) {
-      form.save();
-      setState(() {});
-      onSubmitReset();
-    }
-  }
-
-  Future onSubmitReset() async {
+  Future onSubmitReset(BuildContext context) async {
     print("onSubmitReset $_email");
     FirebaseUser user =
         await _auth.sendPasswordResetEmail(email: _email).then((value) {
@@ -195,7 +189,7 @@ class _SplashState extends State<Splash> {
             padding: EdgeInsets.all(20.0),
             child: new Column(
               children: <Widget>[
-   new Text("Password reset"),
+         new Text("Password reset"),
           new Divider(),
           new Text("Succesfully sent email for a password reset"),
           new FlatButton(
@@ -214,7 +208,6 @@ class _SplashState extends State<Splash> {
 
       showDialog(context: context, child: confirmsuccess);
     }).catchError((errormessage) {
-
             var errorWithRequest = new SimpleDialog(
         children: <Widget>[
           new Container(
@@ -240,20 +233,61 @@ class _SplashState extends State<Splash> {
     });
   }
 
- Future<FirebaseUser> _gSignin() async {
-    GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
-    GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+  void onTapReset(BuildContext context) {
+  var form = passwordResetForm.currentState;
+  print("onTapReset $_email");
+  if (form.validate()) {
+    form.save();
+    setState(() {});
+   onSubmitReset(context);
+  }
+}
 
-    FirebaseUser user = await _auth.signInWithGoogle(
-        idToken: googleSignInAuthentication.idToken,
-        accessToken: googleSignInAuthentication.accessToken);
-    print("User is : ${user.photoUrl}");
+String validateEmail(String str) {
+  Pattern pattern =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  RegExp regex = new RegExp(pattern);
+  print("Validating $_email");
+  if (str.length == 0) {
+    return "Please enter your email address";
+  } else if (!regex.hasMatch(str)) {
+    return "Not a valid email address";
+  } else {
+    return null;
+  }
+}
 
-    return user;
+  String validatePassword (String str) {
+    if (str.length < 8 ) {
+      return "Password must have a minimum of 8 characters";
+    } else {
+      return null;
+    }
   }
 
-  
 
+void onLoginWithEmail(BuildContext context) {
+  bool showLoader = true;
+
+  if (showLoader == true) {
+    showDialog(context: context, child: Loadscreen().show());
+  } 
+
+  print("onLoginWithEmail");
+  var loginform = loginFormKey.currentState;
+  print("Validating");
+  if (loginform.validate()) {
+    loginform.save();
+    print("Validated");
+    print("_email");
+    showLoader = false;
+    UserManagement().emailSignIn(context, _email, _password);
+
+  } else {
+    showLoader = false;
+    print("Not Validated");
+      
+  }
+}
 
 }

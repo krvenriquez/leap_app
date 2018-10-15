@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:async/async.dart';
-
-
-
-
 import 'package:leap_app/ui/drawer.dart';
-import 'package:leap_app/usermanagement.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -18,7 +11,8 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: new Center(child:new CircularProgressIndicator()),
+      appBar: new AppBar(backgroundColor: Colors.black,title: new Text("Leap Companion")),
+      drawer: LEAPDrawer(),    
     );
   }
 }

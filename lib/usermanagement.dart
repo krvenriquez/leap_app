@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 
 import 'package:leap_app/ui/home.dart';
 import 'package:leap_app/ui/splash.dart';
 import 'package:leap_app/ui/simpleloader.dart';
-import 'package:leap_app/ui/profile.dart';
-import 'package:leap_app/ui/contents.dart';
+import 'package:leap_app/ui/profilesetup.dart';
+import 'package:leap_app/ui/createaccount.dart';
+
+
+
+final GoogleSignIn _googleSignIn = new GoogleSignIn();
+final passwordResetForm = GlobalKey<FormState>();
+final FirebaseAuth _auth = FirebaseAuth.instance;
+
 
 class UserManagement {
   Widget handleAuth() {
@@ -21,8 +30,53 @@ class UserManagement {
         });
   }
 
+  void onTapCreateAccount(BuildContext context) {
+    Navigator.push(
+        context,
+        new MaterialPageRoute(
+            builder: (BuildContext context) => new CreateAccount()));
+  }
+
+  void onTapSignout(BuildContext context) {
+  FirebaseAuth.instance.signOut();
+  Navigator.pop(context);
+}
+
+ void gSignin() async {
+    GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
+    GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
+    FirebaseUser user = await _auth.signInWithGoogle(
+        idToken: googleSignInAuthentication.idToken,
+        accessToken: googleSignInAuthentication.accessToken);
+    print("User is : ${user.photoUrl}");
+  
+  }
+
+  Future<FirebaseUser> emailSignIn(BuildContext context,String _email, String _password) async {
+
+  
 
 
+    FirebaseUser user = await _auth.signInWithEmailAndPassword(email: _email, password: _password).catchError((error) {
+        var onError = SimpleDialog(contentPadding: EdgeInsets.all(10.0),children: <Widget>[
+          new Text("${error.message}")
+    ],);
+    showDialog(context: context, child: onError);
+    });
+
+
+    assert(user != null);
+    assert(await user.getIdToken() != null);
+
+    final FirebaseUser currentUser = await _auth.currentUser();
+    assert(user.uid == currentUser.uid);
+
+    return user;
+  }
+
+ 
 }
 
 class ProfileManagement {
@@ -58,7 +112,9 @@ class ProfileManagement {
   }
 }
 
-  logOut () {
-    FirebaseAuth.instance.signOut();
-  }
+
+
+
+
+
 
