@@ -1,0 +1,145 @@
+{
+    "customerNumber": "20401710",
+    "firstName": "JUAN",
+    "middleName": "",
+    "lastName": "DELA CRUZ",
+    "suffix": "",
+    "riskScore": "",
+    "ibTag": "Y",
+    "remarks": "",
+    "typCd": "P",
+    "telephone": [
+        {
+            "telType": "M",
+            "telCountryCode": "+63",
+            "telAreaCode": "917",
+            "telNumber": "4556789"
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        },
+        {
+            "telType": "",
+            "telCountryCode": "",
+            "telAreaCode": "",
+            "telNumber": ""
+        }
+    ],
+    "tinCode": "0",
+    "tinNumber": "888888888",
+    "sssOtherIDCode": "2",
+    "sssOtherID": "356678880",
+    "gender": "M",
+    "birthdate": "06/12/1994",
+    "birthplace": "MAKATI",
+    "motherMaidenName": "MAIDEN",
+    "maritalStatus": "M",
+    "employerName": "UNITAS",
+    "employerBusNature": "OTH",
+    "sourceOfFunds": "F",
+    "jobTitle": "MGR",
+    "citizenship": "US",
+    "presSequence": "000",
+    "customerAddress": "\\",
+    "customerAddress2": ">",
+    "customerAddress3": "BELAIR",
+    "customerAddress4": "",
+    "cityProvince": "ABRA",
+    "districtCity": "MAKATI",
+    "zipCode": "1234",
+    "country": "PH",
+    "permSequence": "002",
+    "permAddress1": "BBC MAKATI",
+    "permAddress2": "",
+    "permAddress3": "",
+    "permAddress4": "",
+    "permCityProvince": "ABRA",
+    "permDistrictTown": "BANGUED",
+    "permZipCode": "2800",
+    "permCountry": "PHILIPPINES",
+    "primaryEmail": "TEST@ADDR.COM.PH",
+    "sequenceNo": "001",
+    "returnCode": "00",
+    "returnMessage": ""
+}
